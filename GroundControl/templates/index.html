@@ -1,0 +1,94 @@
+<html>
+<head>
+    <title>Ground Control</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+    <script src="/www/groundControl.js"></script>
+    <style>
+        * { margin:0;top:0;left:0;}
+        body { width:100vw; height:100vh; background-color:#000;}
+        .wrapper { width:100%;height:100%; display:flex; flex-wrap: wrap;}
+        .wrapper .left-panel { width:400px; height:100%; background-color: red;}
+        .wrapper .left-panel textarea {width:100%; height:80%; resize: none; background-color: #333; color:#0D8;border:none;padding-left:2px;overflow-y: scroll;}
+        .wrapper .left-panel table { width:100%; height:20%; background-color: #333; border:none; border-collapse: collapse;}
+        .wrapper .left-panel table th,td { color:#DDD; border:1px solid #0D8; text-align: center; }
+        .wrapper .left-panel table td:nth-child(2) {color:blue;}
+        .wrapper .left-panel table td:nth-child(3) {color:lightgreen;}
+        .wrapper .left-panel table td:nth-child(4) {color:lightsalmon;}
+
+        .wrapper .main-content { display:block; width:calc(100% - 400px); height:100%; background-color: blue; }
+        #map {width:100%;height:100%;}
+
+        .modal { position:absolute; width:100vw;height:100vh; background-color:rgba(0,0,0,0.5);}
+        .modal .modal-area {position:relative; top:calc(50% - 50px); left:calc(50% - 150px); width:300px; height:100px; background-color:white; justify-content: center; text-align: center;}
+        .modal .modal-area input { height:30px; text-align:center;}
+        .modal .modal-area button { height:30px; }
+        .modal .modal-area h4 { width:100%; height:20px;background-color: blue; color:white;margin-bottom:20px;}
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="left-panel">
+            <textarea id="consoleWindow" readonly></textarea>
+            <table id="tableWindow">
+                <tr>
+                    <td>Latitude</td>
+                    <td colspan="3">0.0</td>
+                </tr>
+                <tr>
+                    <td>Longitude</td>
+                    <td colspan="3">0.0</td>
+                </tr>
+                <tr>
+                    <td>Altitude</td>
+                    <td>0.0</td>
+                    <td>0.0</td>
+                    <td>0.0</td>
+                </tr>
+                <tr>
+                    <td>Sats</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+        <div class="main-content">
+            <div id="map"></div>
+        </div>
+    </div>
+    <div class="modal">
+        <div class="modal-area">
+            <h4>Connect</h4>
+            <label>Serial Port</label>
+            <input id="port" type="text" value="COM11">
+            <button id="connect">Connect</button>
+        </div>
+    </div>
+</body>
+<footer>
+    <script>
+        $(function(){
+            socket= io.connect('http://localhost:5000');
+            var gc = new GroundController(
+                {
+                    mapId: 'map',
+                    mapToken:'[YOUR-API-TOKEN]',
+                    location:[52.04945, -0.8283236],
+                    console:'consoleWindow',
+                    table:'tableWindow'
+                }
+                ,socket);
+            $('#connect').on('click',function(){ console.log("c"); gc.connect( $('#port').val()); });
+            socket.on('locationUpdate',function(msg){
+                gc.update(msg);
+            });
+            socket.on('ready',function(){
+                $('.modal').hide();
+            });
+        });
+    </script>
+</footer>
+</html>
