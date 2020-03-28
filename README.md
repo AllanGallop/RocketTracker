@@ -1,5 +1,5 @@
 # RocketTracker
-Arduino based Transmitter and Reciever for GPS tracking and recovery of model rockets
+Arduino based Transmitter and Receiver for GPS tracking and recovery of model rockets
 
 ## Introduction
 I wanted a way to track my model rockets to aid in recovery, this project instead became an experiment in testing various 
@@ -16,7 +16,7 @@ the Wifi and Lora based modules however the firmware is easily transferrable wit
 ![Transmitter Circuit Diagram](https://github.com/AllanGallop/RocketTracker/blob/master/Screenshots/transmitter_circuit_diagram.png)
 
 ## Receiever
-The reciever is based on an Arduino Nano v3, once again this can be subsituted for most of the Arduino family, and the companion
+The receiver is based on an Arduino Nano v3, once again this can be subsituted for most of the Arduino family, and the companion
 ASK-433 receiver.
 ![Receiver Circuit Diagram](https://github.com/AllanGallop/RocketTracker/blob/master/Screenshots/reciever_circuit_diagram.png)
 
